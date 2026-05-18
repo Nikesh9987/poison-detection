@@ -1,23 +1,38 @@
 import streamlit as st
 import joblib
+import os
 
+# ==========================
+# Load trained model safely
+# ==========================
 
+BASE_DIR = os.path.dirname(__file__)
+MODEL_PATH = os.path.join(
+    BASE_DIR,
+    "model",
+    "toxic_detection_model.pkl"
+)
 
+model = joblib.load(MODEL_PATH)
 
-# Load trained model
-model = joblib.load("model/toxic_detection_model.pkl")
+# ==========================
+# Page config
+# ==========================
+
 st.set_page_config(
-    page_title="AI Forensic Toxicology Predictor",
+    page_title="Poison Detection",
     layout="wide"
 )
 
-st.title(" AI-DSS Forensic Toxicology System")
+st.title(" Poison Detection System")
 
-st.write("Enter forensic observations to detect probable toxic substances.")
+st.write(
+    "Enter forensic observations to detect probable toxic substances."
+)
 
-# -----------------------------
+# ==========================
 # P1 — Clinical Symptoms
-# -----------------------------
+# ==========================
 
 cns = st.multiselect(
     "CNS Symptoms",
@@ -71,9 +86,9 @@ other = st.multiselect(
     ]
 )
 
-# -----------------------------
+# ==========================
 # P2 — Odour
-# -----------------------------
+# ==========================
 
 odour = st.selectbox(
     "Odour",
@@ -87,9 +102,9 @@ odour = st.selectbox(
     ]
 )
 
-# -----------------------------
+# ==========================
 # P3 — Route
-# -----------------------------
+# ==========================
 
 route = st.selectbox(
     "Route of Exposure",
@@ -102,9 +117,9 @@ route = st.selectbox(
     ]
 )
 
-# -----------------------------
+
 # P4 — Timeline
-# -----------------------------
+
 
 timeline = st.radio(
     "Symptom Onset Timeline",
@@ -117,9 +132,9 @@ timeline = st.radio(
     ]
 )
 
-# -----------------------------
+
 # P5 — Sample Type
-# -----------------------------
+
 
 sample = st.multiselect(
     "Available Sample Type",
@@ -133,9 +148,9 @@ sample = st.multiselect(
     ]
 )
 
-# -----------------------------
+
 # Prediction
-# -----------------------------
+
 
 if st.button(" Predict Toxic Substance"):
 
@@ -155,20 +170,22 @@ if st.button(" Predict Toxic Substance"):
 
     prediction = model.predict([symptoms])[0]
 
-    st.success(f"Predicted Toxic Substance: {prediction}")
+    st.success(
+        f"Predicted Toxic Substance: {prediction}"
+    )
 
     st.info(f"""
-    Confidence Level: HIGH
+Confidence Level: HIGH
 
-    Route of Exposure:
-    {route}
+Route of Exposure:
+{route}
 
-    Timeline:
-    {timeline}
+Timeline:
+{timeline}
 
-    Recommended Sample:
-    {', '.join(sample)}
-    """)
+Recommended Sample:
+{', '.join(sample)}
+""")
 
     st.warning(
         "This is a preliminary forensic decision-support output. "
